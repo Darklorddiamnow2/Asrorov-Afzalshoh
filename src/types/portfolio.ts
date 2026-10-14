@@ -14,10 +14,15 @@ export interface StudentProfile {
   portraitType: 'typographic' | 'image';
   portraitImageUrl?: string;
   email: string;
+  phone?: string;
   location: string;
   githubUrl?: string;
   linkedinUrl?: string;
   scholarUrl?: string;
+  telegramUrl?: string;
+  instagramUrl?: string;
+  ieltsScore?: string;
+  satScore?: string;
 }
 
 export interface IntellectualPillar {

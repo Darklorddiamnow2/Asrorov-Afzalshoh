@@ -3,6 +3,7 @@ import { ArrowUpRight, HelpCircle, BookOpen, Copy, Check, ChevronDown, ChevronUp
 import { motion, AnimatePresence } from 'motion/react';
 import { AcademicInterest } from '../../types/portfolio';
 import { ScrollReveal } from '../common/ScrollReveal';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface AcademicInterestsProps {
   interests: AcademicInterest[];
@@ -13,6 +14,7 @@ export const AcademicInterests: React.FC<AcademicInterestsProps> = ({
   interests,
   onSelectProject,
 }) => {
+  const { t } = useLanguage();
   const [copiedQuestionIdx, setCopiedQuestionIdx] = useState<string | null>(null);
   const [expandedTexts, setExpandedTexts] = useState<Record<string, boolean>>({});
 
@@ -38,15 +40,15 @@ export const AcademicInterests: React.FC<AcademicInterestsProps> = ({
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono tracking-widest text-[var(--accent-gold)] uppercase font-semibold">
-                  02. INTELLECTUAL HORIZONS
+                  {t.interests.kicker}
                 </span>
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-[var(--text-primary)]">
-                Areas of Academic Interest
+                {t.interests.title}
               </h2>
             </div>
             <p className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider max-w-xs text-left md:text-right">
-              Disciplinary domains and core questions proposed for undergraduate research
+              {t.interests.subtitle}
             </p>
           </div>
         </ScrollReveal>
@@ -55,7 +57,7 @@ export const AcademicInterests: React.FC<AcademicInterestsProps> = ({
         <div className="space-y-12">
           {interests.map((interest, index) => (
             <ScrollReveal key={interest.id} delay={index * 0.12} distance={30}>
-              <article className="p-8 lg:p-10 border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-all hover:border-[var(--accent-gold)]/60 hover:shadow-xs">
+              <article className="p-8 lg:p-10 border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-all hover:border-[var(--accent-gold)]/60 hover:shadow-xs rounded">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                   {/* Left Meta & Title */}
                   <div className="lg:col-span-5 space-y-4">
@@ -79,11 +81,11 @@ export const AcademicInterests: React.FC<AcademicInterestsProps> = ({
                         <button
                           type="button"
                           onClick={() => toggleExpandText(interest.id)}
-                          className="flex items-center justify-between w-full text-xs font-mono text-[var(--accent-gold)] uppercase mb-2 hover:underline"
+                          className="flex items-center justify-between w-full text-xs font-mono text-[var(--accent-gold)] uppercase mb-2 hover:underline cursor-pointer"
                         >
                           <div className="flex items-center gap-1.5 font-semibold">
                             <BookOpen className="w-3.5 h-3.5" />
-                            <span>Core Reference Texts ({interest.foundationalTexts.length})</span>
+                            <span>{t.interests.coreTexts} ({interest.foundationalTexts.length})</span>
                           </div>
                           {expandedTexts[interest.id] ? (
                             <ChevronUp className="w-3.5 h-3.5 text-[var(--text-muted)]" />
@@ -116,9 +118,9 @@ export const AcademicInterests: React.FC<AcademicInterestsProps> = ({
                             key={pId}
                             type="button"
                             onClick={() => onSelectProject(pId)}
-                            className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--text-primary)] hover:text-[var(--accent-gold)] underline underline-offset-4 transition-colors"
+                            className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--text-primary)] hover:text-[var(--accent-gold)] underline underline-offset-4 transition-colors cursor-pointer"
                           >
-                            <span>Inspect linked computational prototype</span>
+                            <span>{t.interests.inspectPrototype}</span>
                             <ArrowUpRight className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
                           </motion.button>
                         ))}
@@ -127,16 +129,16 @@ export const AcademicInterests: React.FC<AcademicInterestsProps> = ({
                   </div>
 
                   {/* Right: Core Research & Investigation Questions */}
-                  <div className="lg:col-span-7 bg-[var(--bg-surface-subtle)] p-6 lg:p-8 border border-[var(--border-subtle)]">
+                  <div className="lg:col-span-7 bg-[var(--bg-surface-subtle)] p-6 lg:p-8 border border-[var(--border-subtle)] rounded">
                     <div className="flex items-center justify-between gap-2 mb-4 pb-2 border-b border-[var(--border-subtle)]">
                       <div className="flex items-center gap-2">
                         <HelpCircle className="w-4 h-4 text-[var(--accent-gold)]" />
                         <span className="text-xs font-mono uppercase tracking-wider text-[var(--text-primary)] font-semibold">
-                          Core Inquiries Under Investigation
+                          {t.interests.coreInquiriesTitle}
                         </span>
                       </div>
                       <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase">
-                        Hypotheses
+                        {t.interests.hypothesesBadge}
                       </span>
                     </div>
 
@@ -161,7 +163,7 @@ export const AcademicInterests: React.FC<AcademicInterestsProps> = ({
                               type="button"
                               onClick={() => handleCopyQuestion(question, copyKey)}
                               title="Copy research question to clipboard"
-                              className="opacity-0 group-hover:opacity-100 p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-gold)] transition-all shrink-0"
+                              className="opacity-0 group-hover:opacity-100 p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-gold)] transition-all shrink-0 cursor-pointer"
                             >
                               {copiedQuestionIdx === copyKey ? (
                                 <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -175,8 +177,8 @@ export const AcademicInterests: React.FC<AcademicInterestsProps> = ({
                     </ul>
 
                     <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] font-mono text-[var(--text-muted)]">
-                      <span>STATUS: ACTIVE READING & REPLICATION</span>
-                      <span>UNDERGRADUATE LEVEL INQUIRY</span>
+                      <span>{t.interests.statusActive}</span>
+                      <span>{t.interests.statusLevel}</span>
                     </div>
                   </div>
                 </div>

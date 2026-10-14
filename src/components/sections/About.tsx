@@ -2,12 +2,15 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { AboutContent } from '../../types/portfolio';
 import { ScrollReveal } from '../common/ScrollReveal';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface AboutProps {
   about: AboutContent;
 }
 
 export const About: React.FC<AboutProps> = ({ about }) => {
+  const { t } = useLanguage();
+
   return (
     <section id="about" className="scroll-mt-24 py-20 border-b border-[var(--border-subtle)] transition-colors">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -17,15 +20,15 @@ export const About: React.FC<AboutProps> = ({ about }) => {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono tracking-widest text-[var(--accent-gold)] uppercase font-semibold">
-                  01. STATEMENT OF ORIENTATION
+                  {t.about.kicker}
                 </span>
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-[var(--text-primary)]">
-                About My Intellectual Development
+                {t.about.title}
               </h2>
             </div>
             <span className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider">
-              Philosophy · Approach · Aims
+              {t.about.subtitle}
             </span>
           </div>
         </ScrollReveal>
@@ -48,7 +51,7 @@ export const About: React.FC<AboutProps> = ({ about }) => {
             <ScrollReveal delay={0.2} direction="left">
               <div>
                 <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--accent-gold)] mb-3 font-semibold">
-                  Approach to Learning
+                  {t.about.learningApproachTitle}
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)] leading-relaxed font-sans">
                   {about.intellectualApproach}
@@ -59,7 +62,7 @@ export const About: React.FC<AboutProps> = ({ about }) => {
             <ScrollReveal delay={0.3} direction="left">
               <div className="pt-4 border-t border-[var(--border-subtle)]">
                 <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--accent-gold)] mb-3 font-semibold">
-                  University Objectives
+                  {t.about.uniObjectivesTitle}
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)] leading-relaxed font-sans">
                   {about.universityAspirations}
@@ -70,10 +73,10 @@ export const About: React.FC<AboutProps> = ({ about }) => {
             <ScrollReveal delay={0.4} direction="left">
               <div className="pt-4 border-t border-[var(--border-subtle)]">
                 <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--accent-gold)] mb-3 font-semibold">
-                  Independent Inquiry Standard
+                  {t.about.standardTitle}
                 </h3>
                 <p className="text-xs font-sans text-[var(--text-muted)] leading-relaxed italic">
-                  Independent projects are treated not as extracurricular embellishments, but as self-assigned laboratory problems subject to peer-style critique, version control, and reproducible writeups.
+                  {t.about.standardText}
                 </p>
               </div>
             </ScrollReveal>
@@ -85,7 +88,7 @@ export const About: React.FC<AboutProps> = ({ about }) => {
           <ScrollReveal>
             <div className="mb-8">
               <h3 className="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-semibold">
-                Guiding Principles of Inquiry
+                {t.about.principlesTitle}
               </h3>
             </div>
           </ScrollReveal>
@@ -96,7 +99,7 @@ export const About: React.FC<AboutProps> = ({ about }) => {
                 <motion.div
                   whileHover={{ y: -4, borderColor: 'var(--accent-gold)' }}
                   transition={{ duration: 0.2 }}
-                  className="p-6 border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex flex-col justify-between h-full transition-colors shadow-xs"
+                  className="p-6 border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex flex-col justify-between h-full transition-colors shadow-xs rounded"
                 >
                   <div>
                     <span className="text-xs font-mono text-[var(--accent-gold)] mb-2 block tabular-nums font-semibold">

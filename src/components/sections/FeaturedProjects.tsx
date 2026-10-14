@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Project } from '../../types/portfolio';
 import { ProjectDiagram } from '../visuals/ProjectDiagram';
 import { ScrollReveal } from '../common/ScrollReveal';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface FeaturedProjectsProps {
   projects: Project[];
@@ -16,8 +17,16 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
   projects,
   onSelectProject,
 }) => {
+  const { t } = useLanguage();
   const [activeFilter, setActiveFilter] = useState<ProjectFilter>('All');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const filterLabels: Record<ProjectFilter, string> = {
+    All: t.projects.all,
+    Computational: t.projects.computational,
+    Quantitative: t.projects.quantitative,
+    Cognitive: t.projects.cognitive,
+  };
 
   const filteredProjects = projects.filter((project) => {
     const matchesFilter = activeFilter === 'All' || project.category === activeFilter;
@@ -38,11 +47,11 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono tracking-widest text-[var(--accent-gold)] uppercase font-semibold">
-                  03. SELECTED ARTIFACTS
+                  {t.projects.kicker}
                 </span>
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-[var(--text-primary)]">
-                Featured Projects & Codebases
+                {t.projects.title}
               </h2>
             </div>
 
@@ -54,13 +63,13 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                   key={filter}
                   type="button"
                   onClick={() => setActiveFilter(filter)}
-                  className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider transition-all whitespace-nowrap shrink-0 rounded ${
+                  className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider transition-all whitespace-nowrap shrink-0 rounded cursor-pointer ${
                     activeFilter === filter
                       ? 'bg-[var(--accent-navy)] text-white shadow-xs font-semibold'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'
                   }`}
                 >
-                  {filter}
+                  {filterLabels[filter]}
                 </motion.button>
               ))}
             </div>
@@ -73,7 +82,7 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
             <Search className="w-3.5 h-3.5 text-[var(--text-muted)] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search methods, tools, topics..."
+              placeholder={t.projects.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-1.5 text-xs font-mono bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded transition-colors placeholder:text-[var(--text-muted)]"
@@ -81,14 +90,14 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
           </div>
 
           <div className="text-xs font-mono text-[var(--text-muted)] flex items-center gap-2">
-            <span>Showing {filteredProjects.length} of {projects.length} artifacts</span>
+            <span>{t.projects.showingText(filteredProjects.length, projects.length)}</span>
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="text-[var(--accent-gold)] hover:underline ml-1"
+                className="text-[var(--accent-gold)] hover:underline ml-1 cursor-pointer"
               >
-                Clear
+                {t.projects.clearSearch}
               </button>
             )}
           </div>
@@ -105,7 +114,7 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                 exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.35, delay: idx * 0.08 }}
                 key={project.id}
-                className="border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex flex-col justify-between hover:border-[var(--accent-gold)]/70 hover:shadow-sm transition-all group rounded-none"
+                className="border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex flex-col justify-between hover:border-[var(--accent-gold)]/70 hover:shadow-sm transition-all group rounded overflow-hidden"
               >
                 <div>
                   {/* Visual Interactive Diagram */}
@@ -139,7 +148,7 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                     <div className="pt-4 border-t border-[var(--border-subtle)] space-y-3">
                       <div>
                         <span className="block text-[11px] font-mono text-[var(--accent-gold)] uppercase font-semibold">
-                          Core Problem Addressed:
+                          {t.projects.coreProblem}
                         </span>
                         <p className="text-xs text-[var(--text-secondary)] font-sans mt-0.5 line-clamp-2">
                           {project.problemStatement}
@@ -148,7 +157,7 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
 
                       <div>
                         <span className="block text-[11px] font-mono text-[var(--text-muted)] uppercase font-semibold">
-                          Individual Contribution:
+                          {t.projects.contribution}
                         </span>
                         <p className="text-xs text-[var(--text-secondary)] font-sans mt-0.5 line-clamp-2">
                           {project.studentContribution}
@@ -167,7 +176,7 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                     onClick={() => onSelectProject(project)}
                     className="cursor-pointer inline-flex items-center gap-1.5 text-xs font-mono text-[var(--text-primary)] hover:text-[var(--accent-gold)] font-medium uppercase tracking-wider py-2 transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent-gold)]"
                   >
-                    <span>Examine Methodology</span>
+                    <span>{t.projects.examineMethodology}</span>
                     <ChevronRight className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
                   </motion.button>
 

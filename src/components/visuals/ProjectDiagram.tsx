@@ -58,7 +58,7 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
         }
         return prev + 1;
       });
-    }, 700);
+    }, 220);
   };
 
   // -------------------------------------------------------------
@@ -84,14 +84,14 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
     setIsSimulatingCascade(true);
     let current = 0.05;
     const interval = setInterval(() => {
-      current += 0.05;
+      current += 0.02;
       if (current >= 0.55) {
         clearInterval(interval);
         setIsSimulatingCascade(false);
       } else {
         setRemovalFraction(parseFloat(current.toFixed(2)));
       }
-    }, 200);
+    }, 35);
   };
 
   // -------------------------------------------------------------
@@ -128,7 +128,7 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
         pathPoints.push({ x: currentSvgX, y: upperLimit });
         setSimulatedPaths((prev) => [
           ...prev.slice(-4),
-          { points: pathPoints, outcome: 'A', decisionTime: parseFloat((step * 14).toFixed(0)) },
+          { points: [...pathPoints], outcome: 'A', decisionTime: parseFloat((step * 14).toFixed(0)) },
         ]);
         clearInterval(stepInterval);
         setIsGeneratingTrajectory(false);
@@ -136,7 +136,7 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
         pathPoints.push({ x: currentSvgX, y: lowerLimit });
         setSimulatedPaths((prev) => [
           ...prev.slice(-4),
-          { points: pathPoints, outcome: 'B', decisionTime: parseFloat((step * 14).toFixed(0)) },
+          { points: [...pathPoints], outcome: 'B', decisionTime: parseFloat((step * 14).toFixed(0)) },
         ]);
         clearInterval(stepInterval);
         setIsGeneratingTrajectory(false);
@@ -144,7 +144,7 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
         pathPoints.push({ x: currentSvgX, y: currentSvgY });
         setSimulatedPaths((prev) => [
           ...prev.slice(-4),
-          { points: pathPoints, outcome: currentSvgY < 100 ? 'A' : 'B', decisionTime: 560 },
+          { points: [...pathPoints], outcome: currentSvgY < 100 ? 'A' : 'B', decisionTime: 560 },
         ]);
         clearInterval(stepInterval);
         setIsGeneratingTrajectory(false);
@@ -163,7 +163,7 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
           return updated;
         });
       }
-    }, 45);
+    }, 18);
   };
 
   // Initial seed simulation for cognition
@@ -219,7 +219,7 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
         setVisitedNodes((prev) => [...prev, next]);
         idx++;
       }
-    }, 120);
+    }, 45);
   };
 
   return (
@@ -375,13 +375,49 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
             ======================================================== */}
         {type === 'policy' && (
           <div className="w-full h-full flex flex-col justify-between">
-            <svg viewBox="0 0 380 175" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              viewBox="0 0 380 175"
+              className="w-full h-full cursor-crosshair select-none"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const ratio = (clickX / rect.width) * 380;
+                const frac = Math.max(0, Math.min(0.58, (ratio - 40) / 300));
+                setRemovalFraction(parseFloat(frac.toFixed(2)));
+              }}
+              onMouseMove={(e) => {
+                if (e.buttons === 1) {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const clickX = e.clientX - rect.left;
+                  const ratio = (clickX / rect.width) * 380;
+                  const frac = Math.max(0, Math.min(0.58, (ratio - 40) / 300));
+                  setRemovalFraction(parseFloat(frac.toFixed(2)));
+                }
+              }}
+            >
+              <defs>
+                <filter id="ethereal-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <linearGradient id="percolation-curve-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="var(--accent-gold)" stopOpacity="0.9" />
+                  <stop offset="60%" stopColor="var(--accent-gold)" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="var(--text-primary)" stopOpacity="0.4" />
+                </linearGradient>
+              </defs>
+
               {/* Axes */}
               <line x1="40" y1="145" x2="340" y2="145" stroke="var(--border-strong)" strokeWidth="1" />
               <line x1="40" y1="145" x2="40" y2="20" stroke="var(--border-strong)" strokeWidth="1" />
 
               <text x="335" y="158" fill="var(--text-muted)" fontSize="8.5" fontFamily="var(--font-mono)" textAnchor="end">
-                Hub Removal Fraction (p)
+                Hub Removal Fraction (p) — Click to scrub
               </text>
               <text
                 x="30"
@@ -426,19 +462,46 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
               {/* Hub-and-Spoke Topology Curve */}
               <path
                 d="M 40 35 C 75 42, 110 82, 140 128 C 170 142, 240 145, 335 145"
-                stroke="var(--accent-gold)"
+                stroke="url(#percolation-curve-grad)"
                 strokeWidth="1.75"
                 strokeDasharray="3 2"
                 strokeOpacity={networkTopology === 'hub-spoke' ? 1 : 0.35}
               />
 
-              {/* Interactive Cursor Current Point */}
+              {/* Interactive Cursor Current Point with Ethereal Aura */}
               {(() => {
                 const currentX = 40 + removalFraction * 370;
                 // Calculate curve Y
                 const normalizedY = 145 - (giantComponentRatio / 100) * 110;
                 return (
                   <g>
+                    {/* Primary circle selector 1 target */}
+                    <circle
+                      cx={currentX}
+                      cy={normalizedY}
+                      r="6"
+                      fill="var(--accent-gold)"
+                      stroke="#FFFFFF"
+                      strokeWidth="1.5"
+                      filter="url(#ethereal-glow)"
+                    />
+                    {/* Ethereal glowing halo rings */}
+                    <circle
+                      cx={currentX}
+                      cy={normalizedY}
+                      r="14"
+                      fill="var(--accent-gold)"
+                      opacity="0.25"
+                      className="ethereal-pulsing"
+                    />
+                    <circle
+                      cx={currentX}
+                      cy={normalizedY}
+                      r="9"
+                      fill="var(--accent-gold)"
+                      opacity="0.38"
+                    />
+
                     <line
                       x1={currentX}
                       y1="25"
@@ -446,26 +509,28 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
                       y2="145"
                       stroke="var(--accent-gold)"
                       strokeWidth="1.5"
+                      strokeDasharray="2 2"
                     />
-                    <circle cx={currentX} cy={normalizedY} r="4.5" fill="var(--accent-gold)" stroke="#FFFFFF" strokeWidth="1.5" />
+
                     <rect
-                      x={Math.min(260, Math.max(50, currentX - 40))}
+                      x={Math.min(260, Math.max(50, currentX - 44))}
                       y="16"
-                      width="80"
-                      height="18"
+                      width="88"
+                      height="20"
                       fill="var(--bg-surface)"
                       stroke="var(--border-subtle)"
-                      rx="2"
+                      rx="3"
                     />
                     <text
-                      x={Math.min(300, Math.max(90, currentX))}
-                      y="29"
+                      x={Math.min(304, Math.max(94, currentX))}
+                      y="30"
                       fill="var(--text-primary)"
                       fontSize="9"
                       fontFamily="var(--font-mono)"
+                      fontWeight="600"
                       textAnchor="middle"
                     >
-                      S({removalFraction}) = {giantComponentRatio}%
+                      S({removalFraction.toFixed(2)}) = {giantComponentRatio}%
                     </text>
                   </g>
                 );
@@ -730,25 +795,49 @@ export const ProjectDiagram: React.FC<ProjectDiagramProps> = ({
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="text-[10px] text-[var(--text-muted)] shrink-0">
+                <span className="text-[10px] text-[var(--text-muted)] shrink-0 font-medium">
                   Node Removal p = {removalFraction.toFixed(2)}
                 </span>
                 <input
                   type="range"
                   min="0.00"
-                  max="0.60"
+                  max="0.58"
                   step="0.02"
                   value={removalFraction}
                   onChange={(e) => setRemovalFraction(parseFloat(e.target.value))}
                   className="w-full accent-[var(--accent-gold)] cursor-pointer"
                 />
                 <span
-                  className={`text-[10px] font-semibold shrink-0 px-2 py-0.5 rounded ${
-                    isCollapsed ? 'bg-red-500/10 text-red-600' : 'bg-emerald-500/10 text-emerald-600'
+                  className={`text-[10px] font-semibold shrink-0 px-2 py-0.5 rounded transition-colors ${
+                    isCollapsed ? 'bg-red-500/15 text-red-600' : 'bg-emerald-500/15 text-emerald-600'
                   }`}
                 >
                   {isCollapsed ? 'COLLAPSED' : 'STABLE'}
                 </span>
+              </div>
+
+              {/* Tangible Presets */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                <span className="text-[10px] text-[var(--text-muted)] uppercase">Presets:</span>
+                {[
+                  { label: 'Nominal (p=0.04)', val: 0.04 },
+                  { label: 'Hub Shock (p=0.15)', val: 0.15 },
+                  { label: 'Critical Threshold (p=0.38)', val: 0.38 },
+                  { label: 'System Outage (p=0.50)', val: 0.50 },
+                ].map((preset) => (
+                  <button
+                    key={preset.label}
+                    type="button"
+                    onClick={() => setRemovalFraction(preset.val)}
+                    className={`px-2 py-0.5 text-[10px] rounded transition-all cursor-pointer ${
+                      Math.abs(removalFraction - preset.val) < 0.02
+                        ? 'bg-[var(--accent-gold)] text-white font-semibold shadow-xs'
+                        : 'border border-[var(--border-subtle)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--accent-gold)] hover:bg-[var(--bg-surface-elevated)]'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
               </div>
             </div>
           )}

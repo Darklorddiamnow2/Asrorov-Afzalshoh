@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { TimelineMilestone } from '../../types/portfolio';
 import { ScrollReveal } from '../common/ScrollReveal';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface TimelineProps {
   timeline: TimelineMilestone[];
 }
 
 export const Timeline: React.FC<TimelineProps> = ({ timeline }) => {
+  const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<string>('All');
 
   const categories = ['All', 'Coursework', 'Research', 'Project', 'Milestone'];
@@ -26,11 +28,11 @@ export const Timeline: React.FC<TimelineProps> = ({ timeline }) => {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono tracking-widest text-[var(--accent-gold)] uppercase font-semibold">
-                  07. INTELLECTUAL TRAJECTORY
+                  {t.timeline.kicker}
                 </span>
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-[var(--text-primary)]">
-                Development Timeline
+                {t.timeline.title}
               </h2>
             </div>
 
@@ -42,7 +44,7 @@ export const Timeline: React.FC<TimelineProps> = ({ timeline }) => {
                   key={cat}
                   type="button"
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-3 py-1 text-xs font-mono uppercase tracking-wider rounded transition-all ${
+                  className={`px-3 py-1 text-xs font-mono uppercase tracking-wider rounded transition-all cursor-pointer ${
                     activeCategory === cat
                       ? 'bg-[var(--accent-navy)] text-white font-semibold shadow-xs'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] bg-[var(--bg-surface-elevated)] hover:bg-[var(--bg-surface)]'
@@ -69,7 +71,7 @@ export const Timeline: React.FC<TimelineProps> = ({ timeline }) => {
                 className="relative group"
               >
                 {/* Timeline Node Indicator with pulse effect */}
-                <div className="absolute -left-[37px] md:-left-[53px] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-[var(--text-primary)] bg-[var(--bg-primary)] group-hover:bg-[var(--accent-gold)] group-hover:border-[var(--accent-gold)] transition-colors" />
+                <div className="absolute -left-[37px] md:-left-[53px] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-[var(--text-primary)] bg-[var(--bg-primary)] group-hover:bg-[var(--accent-gold)] group-hover:border-[var(--accent-gold)] transition-colors shadow-xs" />
 
                 {/* Date Column (floats to the left on desktop) */}
                 <div className="md:absolute md:-left-36 md:top-1 text-left md:text-right w-24">
@@ -84,12 +86,12 @@ export const Timeline: React.FC<TimelineProps> = ({ timeline }) => {
                 {/* Milestone Card */}
                 <motion.div
                   whileHover={{ x: 4, borderColor: 'var(--accent-gold)' }}
-                  className="p-6 border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-all shadow-xs"
+                  className="p-6 border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-all shadow-xs rounded"
                 >
                   <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] mb-2">
                     <span className="uppercase text-[var(--accent-gold)] font-semibold">{item.category}</span>
                     <span aria-hidden="true">·</span>
-                    <span>Step 0{index + 1}</span>
+                    <span>{t.timeline.step} 0{index + 1}</span>
                   </div>
 
                   <h3 className="font-serif text-xl sm:text-2xl font-medium text-[var(--text-primary)] mb-2">
@@ -102,7 +104,7 @@ export const Timeline: React.FC<TimelineProps> = ({ timeline }) => {
 
                   {item.impactOrOutput && (
                     <div className="pt-3 border-t border-[var(--border-subtle)]/70 flex items-center gap-2 text-xs font-mono text-[var(--text-muted)]">
-                      <span className="text-[var(--accent-gold)] font-medium">Documented Output:</span>
+                      <span className="text-[var(--accent-gold)] font-medium">{t.timeline.output}</span>
                       <span className="text-[var(--text-primary)]">{item.impactOrOutput}</span>
                     </div>
                   )}

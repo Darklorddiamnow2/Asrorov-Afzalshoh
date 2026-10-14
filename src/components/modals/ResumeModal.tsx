@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, Printer, Copy, Check, Download, ExternalLink, FileText } from 'lucide-react';
 import { PortfolioData } from '../../types/portfolio';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface ResumeModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface ResumeModalProps {
 }
 
 export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose, data }) => {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
 
@@ -28,11 +30,17 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose, data 
 
   if (!isOpen) return null;
 
+  const candidateName = data.profile.name || 'Afzalshoh Asrorov';
+  const candidateEmail = data.profile.email || 'darklordiamnow2@gmail.com';
+  const candidatePhone = data.profile.phone || '+998(90)4771307';
+  const candidateLocation = data.profile.location || 'Tashkent, Uzbekistan';
+
   const generateCvText = () => {
     return `
-${data.profile.name.toUpperCase()}
+${candidateName.toUpperCase()}
 ${data.profile.applicantStatus}
-Email: ${data.profile.email} | Location: ${data.profile.location}
+Email: ${candidateEmail} | Tel: ${candidatePhone} | Location: ${candidateLocation}
+Telegram: https://t.me/afzal_asrorov | Instagram: https://instagram.com/afzalshoh.asrorov
 GitHub: ${data.profile.githubUrl || 'N/A'} | Scholar: ${data.profile.scholarUrl || 'N/A'}
 
 ============================================================
@@ -73,7 +81,7 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `academic-cv-${data.profile.name.replace(/\s+/g, '-').toLowerCase() || 'applicant'}.txt`;
+    a.download = `academic-cv-${candidateName.replace(/\s+/g, '-').toLowerCase() || 'afzalshoh-asrorov'}.txt`;
     a.click();
     URL.revokeObjectURL(url);
     setDownloadSuccess('TXT');
@@ -85,7 +93,7 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>${data.profile.name} - Academic Curriculum Vitae</title>
+<title>${candidateName} - Academic Curriculum Vitae</title>
 <style>
   body { font-family: 'Times New Roman', Times, serif; max-width: 800px; margin: 40px auto; color: #111; line-height: 1.5; padding: 0 20px; }
   h1 { text-align: center; margin-bottom: 4px; font-size: 26pt; font-weight: normal; }
@@ -99,60 +107,62 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
 </style>
 </head>
 <body>
-  <h1>${data.profile.name}</h1>
+  <h1>${candidateName}</h1>
   <div class="subtitle">${data.profile.applicantStatus}</div>
   <div class="contact">
-    ${data.profile.email} &bull; ${data.profile.location} &bull; GitHub: ${data.profile.githubUrl || 'N/A'}
+    ${candidateEmail} &bull; ${candidatePhone} &bull; ${candidateLocation} &bull; GitHub: ${data.profile.githubUrl || 'N/A'}
   </div>
   <h2>I. Academic Objective</h2>
   <p>${data.profile.leadBio}</p>
   <h2>II. Selected Projects & Inquiries</h2>
   ${data.projects.map(p => `
     <div class="entry">
-      <div class="entry-header"><span>${p.title}</span><span>${p.year}</span></div>
-      <p><em>Problem:</em> ${p.problemStatement}</p>
-      <p><em>Contribution:</em> ${p.studentContribution}</p>
-      <p><em>Outcomes:</em> ${p.outcomesAndLessons}</p>
+      <div class="entry-header">
+        <span>${p.title} (${p.category})</span>
+        <span>${p.year}</span>
+      </div>
+      <p><strong>Problem:</strong> ${p.problemStatement}</p>
+      <p><strong>Contribution:</strong> ${p.studentContribution}</p>
+      <p><strong>Outcome:</strong> ${p.outcomesAndLessons}</p>
     </div>
   `).join('')}
   <h2>III. Verified Honors</h2>
   ${data.achievements.filter(a => a.isVerified).map(a => `
     <div class="entry">
-      <div class="entry-header"><span>${a.title}</span><span>${a.year}</span></div>
+      <div class="entry-header">
+        <span>${a.title}</span>
+        <span>${a.year}</span>
+      </div>
       <p>${a.awardingBody} &bull; ${a.description}</p>
     </div>
   `).join('')}
-  <h2>IV. Skills</h2>
+  <h2>IV. Methodological Competencies</h2>
   ${data.skills.map(s => `
-    <p><strong>${s.category}:</strong> ${s.skills.map(sk => sk.name).join(', ')}</p>
+    <p><strong>${s.category}:</strong> ${s.skills.map(sk => sk.name).join(' &bull; ')}</p>
   `).join('')}
 </body>
 </html>`;
+
     const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `academic-cv-${data.profile.name.replace(/\s+/g, '-').toLowerCase() || 'applicant'}.html`;
+    a.download = `academic-cv-${candidateName.replace(/\s+/g, '-').toLowerCase() || 'afzalshoh-asrorov'}.html`;
     a.click();
     URL.revokeObjectURL(url);
     setDownloadSuccess('HTML');
     setTimeout(() => setDownloadSuccess(null), 2500);
   };
 
-  const handlePrint = () => {
-    try {
-      window.print();
-    } catch {
-      // In case iframe sandboxing restricts print, fallback to download
-      handleDownloadHtml();
-    }
-  };
-
   const handleCopyPlainText = () => {
     const textCv = generateCvText();
     navigator.clipboard.writeText(textCv);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
@@ -163,73 +173,55 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 lg:p-8 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200 print:p-0 print:bg-white"
     >
-      <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[var(--bg-primary)] border border-[var(--accent-gold)]/40 shadow-2xl flex flex-col justify-between transition-colors">
-        {/* Sticky Action Bar */}
-        <div className="sticky top-0 z-20 bg-[var(--bg-surface-elevated)] border-b border-[var(--border-subtle)] px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 no-print">
-          <div className="flex items-center gap-2">
-            <span className="font-serif text-sm font-semibold text-[var(--text-primary)]">
-              Curriculum Vitae
+      <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--accent-gold)]/40 shadow-2xl flex flex-col justify-between print:border-none print:shadow-none print:max-h-none print:overflow-visible transition-colors">
+        {/* Sticky Action Toolbar */}
+        <div className="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 p-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] backdrop-blur-md no-print">
+          <div className="flex items-center gap-2 text-xs font-mono">
+            <span className="text-[var(--accent-gold)] uppercase tracking-wider font-semibold">
+              {t.resume.title}
             </span>
-            <span className="text-[11px] font-mono text-[var(--text-muted)] hidden sm:inline">
-              · Academic Monograph Format
+            <span className="text-[var(--text-muted)] hidden sm:inline">
+              {t.resume.subtitle}
             </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={handleDownloadTxt}
-              title="Download text file"
-              className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono border border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] rounded transition-colors"
+              title="Download clean plain-text CV"
+              className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono border border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] hover:border-[var(--accent-gold)] text-[var(--text-primary)] rounded transition-colors"
             >
-              {downloadSuccess === 'TXT' ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="text-emerald-700">Downloaded</span>
-                </>
-              ) : (
-                <>
-                  <Download className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
-                  <span>Download .txt</span>
-                </>
-              )}
+              <Download className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
+              <span>{downloadSuccess === 'TXT' ? t.resume.copied : t.resume.downloadTxt}</span>
             </button>
 
             <button
               type="button"
               onClick={handleDownloadHtml}
-              title="Download clean HTML/Print format"
-              className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono border border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] rounded transition-colors"
+              title="Download clean HTML format"
+              className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono border border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] hover:border-[var(--accent-gold)] text-[var(--text-primary)] rounded transition-colors"
             >
-              {downloadSuccess === 'HTML' ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="text-emerald-700">Downloaded</span>
-                </>
-              ) : (
-                <>
-                  <FileText className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
-                  <span>Download .html</span>
-                </>
-              )}
+              <FileText className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
+              <span>{downloadSuccess === 'HTML' ? t.resume.copied : t.resume.downloadHtml}</span>
             </button>
 
             <button
               type="button"
               onClick={handleCopyPlainText}
-              className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono border border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] rounded transition-colors"
+              className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono border border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] hover:border-[var(--accent-gold)] text-[var(--text-primary)] rounded transition-colors"
             >
               {copied ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="text-emerald-700">Copied</span>
+                  <span className="text-emerald-700 font-semibold">{t.resume.copied}</span>
                 </>
               ) : (
                 <>
                   <Copy className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
-                  <span>Copy</span>
+                  <span>{t.resume.copyPlain}</span>
                 </>
               )}
             </button>
@@ -237,10 +229,10 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
             <button
               type="button"
               onClick={handlePrint}
-              className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono bg-[var(--accent-navy)] text-white hover:bg-[var(--accent-navy-hover)] rounded transition-colors"
+              className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono bg-[var(--accent-navy)] text-white hover:bg-[var(--accent-navy-hover)] rounded transition-colors shadow-xs"
             >
               <Printer className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
-              <span>Print / PDF</span>
+              <span>{t.resume.printPdf}</span>
             </button>
 
             <button
@@ -259,19 +251,25 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
           {/* Header */}
           <div className="text-center pb-6 border-b-2 border-[var(--text-primary)] mb-8">
             <h1 id="resume-title" className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)] mb-1">
-              {data.profile.name}
+              {candidateName}
             </h1>
             <p className="text-xs font-mono text-[var(--accent-gold)] tracking-wider uppercase mb-2">
               {data.profile.applicantStatus}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-mono text-[var(--text-muted)]">
-              <span>{data.profile.email}</span>
+              <a href={`mailto:${candidateEmail}`} className="hover:text-[var(--accent-gold)] transition-colors underline">
+                {candidateEmail}
+              </a>
               <span aria-hidden="true">·</span>
-              <span>{data.profile.location}</span>
+              <a href={`tel:${candidatePhone.replace(/[^0-9+]/g, '')}`} className="hover:text-[var(--accent-gold)] transition-colors underline">
+                {candidatePhone}
+              </a>
+              <span aria-hidden="true">·</span>
+              <span>{candidateLocation}</span>
               {data.profile.githubUrl && (
                 <>
                   <span aria-hidden="true">·</span>
-                  <a href={data.profile.githubUrl} target="_blank" rel="noreferrer" className="underline">
+                  <a href={data.profile.githubUrl} target="_blank" rel="noreferrer" className="underline hover:text-[var(--accent-gold)]">
                     GitHub
                   </a>
                 </>
@@ -279,43 +277,51 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
               {data.profile.linkedinUrl && (
                 <>
                   <span aria-hidden="true">·</span>
-                  <a href={data.profile.linkedinUrl} target="_blank" rel="noreferrer" className="underline">
+                  <a href={data.profile.linkedinUrl} target="_blank" rel="noreferrer" className="underline hover:text-[var(--accent-gold)]">
                     LinkedIn
                   </a>
                 </>
               )}
+              <span aria-hidden="true">·</span>
+              <a href="https://t.me/afzal_asrorov" target="_blank" rel="noreferrer" className="underline hover:text-[var(--accent-gold)]">
+                TG: @afzal_asrorov
+              </a>
+              <span aria-hidden="true">·</span>
+              <a href="https://instagram.com/afzalshoh.asrorov" target="_blank" rel="noreferrer" className="underline hover:text-[var(--accent-gold)]">
+                IG: @afzalshoh.asrorov
+              </a>
             </div>
           </div>
 
           {/* Section: Academic Orientation */}
           <div className="mb-8">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-[#B69A62] font-bold border-b border-[#E2DFD6] pb-1 mb-3">
+            <h2 className="text-xs font-mono uppercase tracking-widest text-[var(--accent-gold)] font-bold border-b border-[var(--border-subtle)] pb-1 mb-3">
               I. ACADEMIC ORIENTATION & ASPIRATIONS
             </h2>
-            <p className="text-sm text-[#14243A]/90 leading-relaxed font-sans">
+            <p className="text-sm text-[var(--text-primary)]/90 leading-relaxed font-sans">
               {data.profile.leadBio}
             </p>
-            <p className="text-xs text-[#14243A]/75 mt-2 leading-relaxed font-sans italic">
+            <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed font-sans italic">
               Intended Major Fields: Computer Science, Applied Mathematics, and Cognitive Science.
             </p>
           </div>
 
           {/* Section: Independent Research & Inquiries */}
           <div className="mb-8">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-[#B69A62] font-bold border-b border-[#E2DFD6] pb-1 mb-3">
+            <h2 className="text-xs font-mono uppercase tracking-widest text-[var(--accent-gold)] font-bold border-b border-[var(--border-subtle)] pb-1 mb-3">
               II. INDEPENDENT INQUIRIES & RESEARCH DOSSIERS
             </h2>
             <div className="space-y-4">
               {data.researchInquiries.map((ri) => (
                 <div key={ri.id} className="text-xs">
                   <div className="flex items-center justify-between font-mono">
-                    <span className="font-semibold text-sm font-serif text-[#14243A]">{ri.topic}</span>
-                    <span className="text-[#B69A62]">{ri.status} ({ri.dateStarted})</span>
+                    <span className="font-semibold text-sm font-serif text-[var(--text-primary)]">{ri.topic}</span>
+                    <span className="text-[var(--accent-gold)]">{ri.status} ({ri.dateStarted})</span>
                   </div>
-                  <p className="text-[#14243A]/85 mt-1 font-sans italic">
+                  <p className="text-[var(--text-secondary)] mt-1 font-sans italic">
                     Question: "{ri.researchQuestion}"
                   </p>
-                  <p className="text-[#14243A]/75 mt-1 font-sans">
+                  <p className="text-[var(--text-muted)] mt-1 font-sans">
                     Methodology: {ri.methodApproach}
                   </p>
                 </div>
@@ -325,24 +331,24 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
 
           {/* Section: Selected Projects */}
           <div className="mb-8">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-[#B69A62] font-bold border-b border-[#E2DFD6] pb-1 mb-3">
+            <h2 className="text-xs font-mono uppercase tracking-widest text-[var(--accent-gold)] font-bold border-b border-[var(--border-subtle)] pb-1 mb-3">
               III. SELECTED COMPUTATIONAL PROJECTS
             </h2>
             <div className="space-y-5">
               {data.projects.map((project) => (
                 <div key={project.id} className="text-xs">
                   <div className="flex items-center justify-between font-mono">
-                    <span className="font-semibold text-sm font-serif text-[#14243A]">{project.title}</span>
-                    <span className="text-[#14243A]/60 tabular-nums">{project.category} · {project.year}</span>
+                    <span className="font-semibold text-sm font-serif text-[var(--text-primary)]">{project.title}</span>
+                    <span className="text-[var(--text-muted)] tabular-nums">{project.category} · {project.year}</span>
                   </div>
-                  <p className="text-[#14243A]/85 mt-1 font-sans">
-                    <strong className="font-mono text-[11px] text-[#B69A62]">Problem:</strong> {project.problemStatement}
+                  <p className="text-[var(--text-primary)]/85 mt-1 font-sans">
+                    <strong className="font-mono text-[11px] text-[var(--accent-gold)]">Problem:</strong> {project.problemStatement}
                   </p>
-                  <p className="text-[#14243A]/85 mt-1 font-sans">
-                    <strong className="font-mono text-[11px] text-[#14243A]/70">Contribution:</strong> {project.studentContribution}
+                  <p className="text-[var(--text-secondary)] mt-1 font-sans">
+                    <strong className="font-mono text-[11px] text-[var(--text-muted)]">Contribution:</strong> {project.studentContribution}
                   </p>
-                  <p className="text-[#14243A]/75 mt-1 font-sans">
-                    <strong className="font-mono text-[11px] text-[#14243A]/70">Outcome:</strong> {project.outcomesAndLessons}
+                  <p className="text-[var(--text-secondary)] mt-1 font-sans">
+                    <strong className="font-mono text-[11px] text-[var(--text-muted)]">Outcome:</strong> {project.outcomesAndLessons}
                   </p>
                 </div>
               ))}
@@ -351,7 +357,7 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
 
           {/* Section: Verified Honors & Academic Distinctions */}
           <div className="mb-8">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-[#B69A62] font-bold border-b border-[#E2DFD6] pb-1 mb-3">
+            <h2 className="text-xs font-mono uppercase tracking-widest text-[var(--accent-gold)] font-bold border-b border-[var(--border-subtle)] pb-1 mb-3">
               IV. VERIFIED HONORS & RECOGNITION
             </h2>
             <div className="space-y-3">
@@ -360,11 +366,11 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
                 .map((ach) => (
                   <div key={ach.id} className="text-xs">
                     <div className="flex items-center justify-between font-mono">
-                      <span className="font-semibold text-[#14243A]">{ach.title}</span>
-                      <span className="text-[#B69A62] tabular-nums">{ach.year}</span>
+                      <span className="font-semibold text-[var(--text-primary)]">{ach.title}</span>
+                      <span className="text-[var(--accent-gold)] tabular-nums">{ach.year}</span>
                     </div>
-                    <p className="text-[#14243A]/60 font-mono text-[11px]">{ach.awardingBody} · {ach.category}</p>
-                    <p className="text-[#14243A]/80 font-sans mt-0.5">{ach.description}</p>
+                    <p className="text-[var(--text-muted)] font-mono text-[11px]">{ach.awardingBody} · {ach.category}</p>
+                    <p className="text-[var(--text-secondary)] font-sans mt-0.5">{ach.description}</p>
                   </div>
                 ))}
             </div>
@@ -372,16 +378,16 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
 
           {/* Section: Skills & Methodologies */}
           <div>
-            <h2 className="text-xs font-mono uppercase tracking-widest text-[#B69A62] font-bold border-b border-[#E2DFD6] pb-1 mb-3">
+            <h2 className="text-xs font-mono uppercase tracking-widest text-[var(--accent-gold)] font-bold border-b border-[var(--border-subtle)] pb-1 mb-3">
               V. TECHNICAL & METHODOLOGICAL COMPETENCIES
             </h2>
             <div className="space-y-2 text-xs">
               {data.skills.map((cat) => (
                 <div key={cat.category} className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
-                  <span className="font-mono text-[11px] font-semibold text-[#14243A] sm:w-48 shrink-0">
+                  <span className="font-mono text-[11px] font-semibold text-[var(--text-primary)] sm:w-48 shrink-0">
                     {cat.category}:
                   </span>
-                  <span className="text-[#14243A]/80 font-sans">
+                  <span className="text-[var(--text-secondary)] font-sans">
                     {cat.skills.map((s) => s.name).join(' · ')}
                   </span>
                 </div>
@@ -390,7 +396,7 @@ ${data.skills.map((s) => `${s.category}:\n  ${s.skills.map((sk) => `${sk.name} (
           </div>
 
           {/* CV Footer */}
-          <div className="mt-12 pt-6 border-t border-[#E2DFD6] text-center text-[10px] font-mono text-[#14243A]/50">
+          <div className="mt-12 pt-6 border-t border-[var(--border-subtle)] text-center text-[10px] font-mono text-[var(--text-muted)]">
             Document generated for university admissions evaluation. All statements subject to verification via official transcripts and code repositories.
           </div>
         </div>

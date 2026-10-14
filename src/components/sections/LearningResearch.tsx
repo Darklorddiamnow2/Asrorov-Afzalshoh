@@ -3,12 +3,14 @@ import { BookOpen, Compass, FileCheck, ArrowRight, Library, Copy, Check } from '
 import { motion } from 'motion/react';
 import { ResearchInquiry } from '../../types/portfolio';
 import { ScrollReveal } from '../common/ScrollReveal';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface LearningResearchProps {
   inquiries: ResearchInquiry[];
 }
 
 export const LearningResearch: React.FC<LearningResearchProps> = ({ inquiries }) => {
+  const { t } = useLanguage();
   const [copiedCitationIdx, setCopiedCitationIdx] = useState<string | null>(null);
 
   const handleCopyCitation = (citation: string, id: string) => {
@@ -26,16 +28,16 @@ export const LearningResearch: React.FC<LearningResearchProps> = ({ inquiries })
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono tracking-widest text-[var(--accent-gold)] uppercase font-semibold">
-                  04. SCHOLARLY INQUIRY
+                  {t.research.kicker}
                 </span>
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-[var(--text-primary)]">
-                Independent Learning & Research Dossiers
+                {t.research.title}
               </h2>
             </div>
             <div className="max-w-md">
               <p className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider text-left md:text-right">
-                Self-directed reading syllabi, exploratory experiments, and literature surveys
+                {t.research.subtitle}
               </p>
             </div>
           </div>
@@ -43,10 +45,10 @@ export const LearningResearch: React.FC<LearningResearchProps> = ({ inquiries })
 
         {/* Academic Integrity Clarification Banner */}
         <ScrollReveal distance={16} delay={0.1}>
-          <div className="mb-12 p-4 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex items-start gap-3">
+          <div className="mb-12 p-4 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex items-start gap-3 rounded">
             <Library className="w-4 h-4 text-[var(--accent-gold)] shrink-0 mt-0.5" />
             <p className="text-xs font-sans text-[var(--text-secondary)] leading-relaxed">
-              <strong className="font-medium text-[var(--text-primary)]">Academic Integrity Note:</strong> The dossiers below document self-directed pre-collegiate inquiries, critical literature syntheses, and computational experiments. In accordance with university admissions standards, these are clearly demarcated as independent exploratory studies, not formal peer-reviewed faculty publications.
+              {t.research.integrityNote}
             </p>
           </div>
         </ScrollReveal>
@@ -55,7 +57,7 @@ export const LearningResearch: React.FC<LearningResearchProps> = ({ inquiries })
         <div className="space-y-8">
           {inquiries.map((inquiry, index) => (
             <ScrollReveal key={inquiry.id} delay={index * 0.12} distance={24}>
-              <article className="p-8 border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-all hover:border-[var(--accent-gold)]/60">
+              <article className="p-8 border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-all hover:border-[var(--accent-gold)]/60 rounded">
                 <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)] mb-6">
                   <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)]">
                     <span className="text-[var(--accent-gold)] font-semibold tabular-nums">DOSSIER 0{index + 1}</span>
@@ -76,9 +78,9 @@ export const LearningResearch: React.FC<LearningResearchProps> = ({ inquiries })
                       {inquiry.topic}
                     </h3>
 
-                    <div className="bg-[var(--bg-surface-subtle)] p-4 border border-[var(--border-subtle)]">
+                    <div className="bg-[var(--bg-surface-subtle)] p-4 border border-[var(--border-subtle)] rounded">
                       <span className="block text-[11px] font-mono text-[var(--accent-gold)] uppercase font-semibold mb-1">
-                        Central Research Question
+                        {t.research.centralQuestion}
                       </span>
                       <p className="font-serif text-base sm:text-lg text-[var(--text-primary)] italic leading-relaxed">
                         "{inquiry.researchQuestion}"
@@ -87,7 +89,7 @@ export const LearningResearch: React.FC<LearningResearchProps> = ({ inquiries })
 
                     <div>
                       <span className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-2 font-semibold">
-                        Methodological Framework & Approach
+                        {t.research.methodFramework}
                       </span>
                       <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-sans leading-relaxed">
                         {inquiry.methodApproach}
@@ -99,7 +101,7 @@ export const LearningResearch: React.FC<LearningResearchProps> = ({ inquiries })
                   <div className="lg:col-span-5 space-y-6 lg:border-l lg:border-[var(--border-subtle)] lg:pl-8">
                     <div>
                       <span className="block text-xs font-mono uppercase tracking-wider text-[var(--accent-gold)] mb-3 font-semibold">
-                        Key Preliminary Findings / Insights
+                        {t.research.keyInsights}
                       </span>
                       <ul className="space-y-2.5">
                         {inquiry.keyInsights.map((insight, iIdx) => (
@@ -113,7 +115,7 @@ export const LearningResearch: React.FC<LearningResearchProps> = ({ inquiries })
 
                     <div className="pt-4 border-t border-[var(--border-subtle)]">
                       <span className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-2 font-semibold">
-                        Primary Sources & References
+                        {t.research.primarySources}
                       </span>
                       <ul className="space-y-2">
                         {inquiry.references.map((ref, rIdx) => {
@@ -128,7 +130,7 @@ export const LearningResearch: React.FC<LearningResearchProps> = ({ inquiries })
                                 type="button"
                                 onClick={() => handleCopyCitation(ref, refKey)}
                                 title="Copy citation"
-                                className="opacity-0 group-hover:opacity-100 p-1 text-[var(--text-muted)] hover:text-[var(--accent-gold)] transition-all shrink-0"
+                                className="opacity-0 group-hover:opacity-100 p-1 text-[var(--text-muted)] hover:text-[var(--accent-gold)] transition-all shrink-0 cursor-pointer"
                               >
                                 {copiedCitationIdx === refKey ? (
                                   <Check className="w-3.5 h-3.5 text-emerald-600" />

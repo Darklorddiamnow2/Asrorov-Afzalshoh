@@ -1,9 +1,10 @@
 import React from 'react';
-import { ArrowDownRight, FileText, Sparkles, BookOpen } from 'lucide-react';
+import { ArrowDownRight, FileText, Sparkles, BookOpen, Send, Instagram, Award, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { StudentProfile } from '../../types/portfolio';
 import { AcademicPortrait } from '../visuals/AcademicPortrait';
 import { ScrollReveal } from '../common/ScrollReveal';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface HeroProps {
   profile: StudentProfile;
@@ -12,6 +13,8 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenCustomizer }) => {
+  const { t } = useLanguage();
+
   const handleScrollToProjects = (e?: React.MouseEvent) => {
     if (e) {
       e.preventDefault();
@@ -41,6 +44,11 @@ export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenCustomi
     }
   };
 
+  const telegramLink = profile.telegramUrl || 'https://t.me/afzal_asrorov';
+  const instagramLink = profile.instagramUrl || 'https://instagram.com/afzalshoh.asrorov';
+  const ieltsDisplay = profile.ieltsScore || '8.0 (L: 8.5, R: 8.5, W: 7.5, S: 7.5)';
+  const satDisplay = profile.satScore || '1540 (Math: 800, EBRW: 740)';
+
   return (
     <section className="relative pt-12 pb-20 border-b border-[var(--border-subtle)] overflow-hidden transition-colors">
       {/* Subtle background ambient line */}
@@ -53,27 +61,55 @@ export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenCustomi
           <div className="lg:col-span-7 flex flex-col justify-center">
             <ScrollReveal direction="down" distance={16} delay={0.05}>
               {/* Small Kicker Label */}
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-4">
                 <span className="h-px w-6 bg-[var(--accent-gold)]" />
                 <span className="text-xs font-mono tracking-widest text-[var(--accent-gold)] uppercase font-semibold">
-                  {profile.kicker || 'PERSONAL ACADEMIC PORTFOLIO'}
+                  {t.hero.kicker}
                 </span>
               </div>
             </ScrollReveal>
 
             <ScrollReveal distance={16} delay={0.1}>
-              {/* Candidate Sub-identifier */}
-              <div className="mb-4">
-                <span className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wide">
-                  {profile.applicantStatus}
+              {/* Candidate Sub-identifier with Candidate Name */}
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <span className="font-serif text-xl sm:text-2xl font-semibold text-[var(--text-primary)]">
+                  {profile.name || 'Afzalshoh Asrorov'}
                 </span>
+                <span className="text-xs font-mono text-[var(--accent-gold)] uppercase tracking-wide">
+                  · {profile.applicantStatus || t.hero.candidateSubtitle}
+                </span>
+              </div>
+            </ScrollReveal>
+
+            {/* Standardized Test Scores Highlight Badge (IELTS & SAT) */}
+            <ScrollReveal distance={16} delay={0.12}>
+              <div className="mb-5 flex flex-wrap items-center gap-2.5">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--accent-gold)] shadow-2xs rounded transition-colors">
+                  <Award className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
+                  <span className="text-[11px] font-mono font-medium text-[var(--text-primary)]">
+                    <strong className="text-[var(--accent-gold)]">IELTS Academic:</strong> {ieltsDisplay}
+                  </span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 bg-[var(--accent-gold)]/10 text-[var(--accent-gold)] rounded font-semibold uppercase">
+                    C1/C2
+                  </span>
+                </div>
+
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--accent-gold)] shadow-2xs rounded transition-colors">
+                  <Award className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
+                  <span className="text-[11px] font-mono font-medium text-[var(--text-primary)]">
+                    <strong className="text-[var(--accent-gold)]">SAT:</strong> {satDisplay}
+                  </span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 bg-[var(--accent-gold)]/10 text-[var(--accent-gold)] rounded font-semibold uppercase">
+                    99th %ile
+                  </span>
+                </div>
               </div>
             </ScrollReveal>
 
             <ScrollReveal distance={20} delay={0.15}>
               {/* Dominant Headline */}
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-[var(--text-primary)] leading-[1.08] mb-6 text-balance">
-                {profile.headline || 'Curiosity into Contribution.'}
+                {profile.headline || t.hero.headline}
               </h1>
             </ScrollReveal>
 
@@ -84,15 +120,15 @@ export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenCustomi
               </p>
 
               {profile.secondaryBio && (
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed font-sans mb-8 max-w-2xl">
+                <p className="text-sm text-[var(--text-muted)] leading-relaxed font-sans mb-7 max-w-2xl">
                   {profile.secondaryBio}
                 </p>
               )}
             </ScrollReveal>
 
-            {/* Action Buttons */}
+            {/* Action Buttons & Social Channels */}
             <ScrollReveal distance={20} delay={0.25}>
-              <div className="flex flex-wrap items-center gap-4 pt-2">
+              <div className="flex flex-wrap items-center gap-3 pt-1">
                 <motion.a
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
@@ -101,7 +137,7 @@ export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenCustomi
                   onClick={handleScrollToProjects}
                   className="cursor-pointer select-none inline-flex items-center gap-2.5 px-6 py-3.5 bg-[var(--accent-navy)] hover:bg-[var(--accent-navy-hover)] text-white text-xs font-medium uppercase tracking-wider transition-all shadow-xs group focus-visible:outline-2 focus-visible:outline-[var(--accent-gold)]"
                 >
-                  <span>Explore My Work</span>
+                  <span>{t.hero.exploreWork}</span>
                   <ArrowDownRight className="w-4 h-4 text-[var(--accent-gold)] group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-transform" />
                 </motion.a>
 
@@ -117,18 +153,47 @@ export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenCustomi
                   className="cursor-pointer select-none inline-flex items-center gap-2.5 px-6 py-3.5 bg-transparent hover:bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] border border-[var(--border-strong)] text-xs font-medium uppercase tracking-wider transition-all focus-visible:outline-2 focus-visible:outline-[var(--accent-gold)]"
                 >
                   <FileText className="w-4 h-4 text-[var(--accent-gold)]" />
-                  <span>View Resume</span>
+                  <span>{t.hero.viewResume}</span>
                 </motion.button>
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.97 }}
+                {/* Quick Social Badges: Telegram and Instagram */}
+                <div className="flex items-center gap-2 pl-1">
+                  <motion.a
+                    whileHover={{ scale: 1.04, y: -1 }}
+                    whileTap={{ scale: 0.96 }}
+                    href={telegramLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Telegram: @afzal_asrorov"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-mono bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent-gold)] rounded transition-all"
+                  >
+                    <Send className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
+                    <span>Telegram</span>
+                  </motion.a>
+
+                  <motion.a
+                    whileHover={{ scale: 1.04, y: -1 }}
+                    whileTap={{ scale: 0.96 }}
+                    href={instagramLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Instagram: @afzalshoh.asrorov"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-mono bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent-gold)] rounded transition-all"
+                  >
+                    <Instagram className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
+                    <span>Instagram</span>
+                  </motion.a>
+                </div>
+              </div>
+
+              <div className="pt-3">
+                <button
                   type="button"
                   onClick={onOpenCustomizer}
-                  className="cursor-pointer text-xs font-mono text-[var(--text-muted)] hover:text-[var(--accent-gold)] underline underline-offset-4 transition-colors py-2"
+                  className="cursor-pointer text-xs font-mono text-[var(--text-muted)] hover:text-[var(--accent-gold)] underline underline-offset-4 transition-colors"
                 >
-                  Edit candidate placeholders
-                </motion.button>
+                  {t.hero.editPlaceholders}
+                </button>
               </div>
             </ScrollReveal>
           </div>
@@ -146,37 +211,37 @@ export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenCustomi
           <div className="mt-16 pt-8 border-t border-[var(--border-subtle)] grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
             <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-subtle)]/50">
               <span className="block text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider">
-                Primary Focus
+                {t.hero.focusTitle}
               </span>
               <span className="font-serif text-lg text-[var(--text-primary)] font-medium mt-1 block">
-                Computational & Quantitative
+                {t.hero.focusVal}
               </span>
             </div>
 
             <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-subtle)]/50">
               <span className="block text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider">
-                Methodology
+                {t.hero.methodTitle}
               </span>
               <span className="font-serif text-lg text-[var(--text-primary)] font-medium mt-1 block">
-                Formal Modeling & Simulation
+                {t.hero.methodVal}
               </span>
             </div>
 
             <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-subtle)]/50">
               <span className="block text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider">
-                Inquiry Dossiers
+                {t.hero.inquiriesTitle}
               </span>
               <span className="font-serif text-lg text-[var(--text-primary)] font-medium mt-1 block tabular-nums">
-                3 Disciplines · 2 Explorations
+                {t.hero.inquiriesVal}
               </span>
             </div>
 
             <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-subtle)]/50">
               <span className="block text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider">
-                Admissions Target
+                {t.hero.targetTitle}
               </span>
               <span className="font-serif text-lg text-[var(--text-primary)] font-medium mt-1 block">
-                Fall 2026 Undergraduate
+                {t.hero.targetVal}
               </span>
             </div>
           </div>

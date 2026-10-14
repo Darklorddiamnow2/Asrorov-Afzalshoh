@@ -73,12 +73,12 @@ export const AcademicPortrait: React.FC<AcademicPortraitProps> = ({ profile, cla
             <div className="absolute inset-1 rounded-full border border-dashed border-[var(--accent-gold)]/30" />
             <div className="absolute inset-3 rounded-full border border-[var(--border-subtle)]" />
             <span className="font-serif text-3xl font-semibold tracking-wider text-[var(--text-primary)]">
-              {profile.monogram || 'SN'}
+              {profile.monogram || 'AA'}
             </span>
           </motion.div>
 
           <h4 className="font-serif text-xl tracking-tight text-[var(--text-primary)] font-medium">
-            {profile.name}
+            {profile.name || 'Afzalshoh Asrorov'}
           </h4>
           <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-[220px] font-sans">
             Independent Research & Theoretical Inquiry
@@ -98,7 +98,7 @@ export const AcademicPortrait: React.FC<AcademicPortraitProps> = ({ profile, cla
 
       <div className="mt-2.5 text-center">
         <span className="text-[11px] font-mono text-[var(--text-muted)]">
-          [Tasteful portrait placeholder · Photo optional]
+          Scholar Insignia Plate · Afzalshoh Asrorov
         </span>
       </div>
     </div>

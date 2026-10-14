@@ -11,6 +11,7 @@ import {
 } from './data/portfolioData';
 import { PortfolioData, Project } from './types/portfolio';
 import { ThemeProvider } from './context/ThemeContext';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { Navbar } from './components/navigation/Navbar';
 import { Hero } from './components/sections/Hero';
 import { About } from './components/sections/About';
@@ -27,8 +28,12 @@ import { ResumeModal } from './components/modals/ResumeModal';
 import { CustomizerDrawer } from './components/customizer/CustomizerDrawer';
 import { SlidersHorizontal } from 'lucide-react';
 
+import { getLocalizedPortfolioData } from './data/localizedContent';
+
 function PortfolioApp() {
-  const [data, setData] = useState<PortfolioData>(() => loadPortfolioData());
+  const { language, t } = useLanguage();
+  const [rawData, setRawData] = useState<PortfolioData>(() => loadPortfolioData());
+  const data = React.useMemo(() => getLocalizedPortfolioData(rawData, language), [rawData, language]);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
@@ -42,13 +47,13 @@ function PortfolioApp() {
   }, [data.profile.name]);
 
   const handleSaveData = (updated: PortfolioData) => {
-    setData(updated);
+    setRawData(updated);
     savePortfolioData(updated);
   };
 
   const handleResetData = () => {
     const reset = resetPortfolioData();
-    setData(reset);
+    setRawData(reset);
   };
 
   const handleSelectProjectById = (projectId: string) => {
@@ -76,9 +81,9 @@ function PortfolioApp() {
         >
           <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 font-mono text-[11px] truncate">
-              <span className="text-[var(--accent-gold)] font-semibold">ACADEMIC DOSSIER:</span>
+              <span className="text-[var(--accent-gold)] font-semibold uppercase">{t.hero.kicker}:</span>
               <span className="text-white/80 truncate">
-                University Admissions Portfolio · Part 1 of 2: Intellectual Identity, Research & Projects
+                {data.profile.name} · {t.hero.candidateSubtitle}
               </span>
             </div>
 
@@ -89,13 +94,13 @@ function PortfolioApp() {
                 className="hidden sm:inline-flex items-center gap-1 text-[11px] font-mono text-[var(--accent-gold)] hover:text-white underline underline-offset-2 transition-colors"
               >
                 <SlidersHorizontal className="w-3 h-3" />
-                <span>Personalize Placeholders</span>
+                <span>{t.nav.editData}</span>
               </button>
               <button
                 type="button"
                 onClick={() => setShowNotificationRibbon(false)}
                 aria-label="Dismiss notice"
-                className="text-white/50 hover:text-white text-xs px-1"
+                className="text-white/50 hover:text-white text-xs px-1 cursor-pointer"
               >
                 ✕
               </button>
@@ -172,7 +177,7 @@ function PortfolioApp() {
       <CustomizerDrawer
         isOpen={isCustomizerOpen}
         onClose={() => setIsCustomizerOpen(false)}
-        data={data}
+        data={rawData}
         onSaveData={handleSaveData}
         onResetData={handleResetData}
       />
@@ -182,8 +187,10 @@ function PortfolioApp() {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <PortfolioApp />
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <PortfolioApp />
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }

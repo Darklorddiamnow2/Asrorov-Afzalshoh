@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { Terminal, Binary, BookText, Copy, Check, Sparkles } from 'lucide-react';
+import { Terminal, Binary, BookText, Copy, Check, Sparkles, Filter, Search } from 'lucide-react';
 import { motion } from 'motion/react';
 import { SkillCategory } from '../../types/portfolio';
 import { ScrollReveal } from '../common/ScrollReveal';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface SkillsProps {
   skillCategories: SkillCategory[];
 }
 
 export const Skills: React.FC<SkillsProps> = ({ skillCategories }) => {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [highlightedSkill, setHighlightedSkill] = useState<string | null>(null);
+  const [filterQuery, setFilterQuery] = useState('');
 
   const getCategoryIcon = (index: number) => {
     switch (index % 3) {
@@ -45,11 +48,11 @@ export const Skills: React.FC<SkillsProps> = ({ skillCategories }) => {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono tracking-widest text-[var(--accent-gold)] uppercase font-semibold">
-                  06. METHODOLOGICAL APPARATUS
+                  {t.skills.kicker}
                 </span>
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-[var(--text-primary)]">
-                Skills & Analytical Tools
+                {t.skills.title}
               </h2>
             </div>
 
@@ -59,23 +62,28 @@ export const Skills: React.FC<SkillsProps> = ({ skillCategories }) => {
                 whileTap={{ scale: 0.96 }}
                 type="button"
                 onClick={handleCopySkills}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-[var(--text-primary)] border border-[var(--border-subtle)] hover:bg-[var(--bg-surface-elevated)] rounded transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-[var(--text-primary)] border border-[var(--border-subtle)] hover:bg-[var(--bg-surface-elevated)] hover:border-[var(--accent-gold)] rounded transition-colors cursor-pointer"
               >
                 {copied ? (
                   <>
                     <Check className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-emerald-700">Skills Copied</span>
+                    <span className="text-emerald-700 font-semibold">{t.skills.copied}</span>
                   </>
                 ) : (
                   <>
                     <Copy className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
-                    <span>Copy Skills Summary</span>
+                    <span>{t.skills.copySummary}</span>
                   </>
                 )}
               </motion.button>
             </div>
           </div>
         </ScrollReveal>
+
+        {/* Subtitle statement */}
+        <p className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider mb-8">
+          {t.skills.subtitle}
+        </p>
 
         {/* Skills Grid: 3 columns of categorized competencies */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -84,7 +92,7 @@ export const Skills: React.FC<SkillsProps> = ({ skillCategories }) => {
               <motion.div
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.2 }}
-                className="p-8 border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex flex-col justify-between h-full transition-colors shadow-xs"
+                className="p-8 border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex flex-col justify-between h-full transition-colors shadow-xs rounded"
               >
                 <div>
                   <div className="flex items-center gap-2.5 pb-4 border-b border-[var(--border-subtle)] mb-4">
@@ -106,8 +114,10 @@ export const Skills: React.FC<SkillsProps> = ({ skillCategories }) => {
                         <div
                           key={sIdx}
                           onClick={() => setHighlightedSkill(isHighlighted ? null : skill.name)}
-                          className={`pb-3 border-b border-[var(--border-subtle)]/50 last:border-0 last:pb-0 cursor-pointer p-1.5 rounded transition-colors ${
-                            isHighlighted ? 'bg-[var(--accent-gold)]/10 border-[var(--accent-gold)]' : 'hover:bg-[var(--bg-surface-elevated)]'
+                          className={`pb-3 border-b border-[var(--border-subtle)]/50 last:border-0 last:pb-0 cursor-pointer p-2 rounded transition-all ${
+                            isHighlighted
+                              ? 'bg-[var(--accent-gold)]/10 border-[var(--accent-gold)] ring-1 ring-[var(--accent-gold)]/30'
+                              : 'hover:bg-[var(--bg-surface-elevated)]'
                           }`}
                         >
                           <div className="flex items-center justify-between text-xs font-mono text-[var(--text-primary)] font-semibold">
@@ -126,7 +136,7 @@ export const Skills: React.FC<SkillsProps> = ({ skillCategories }) => {
                 </div>
 
                 <div className="mt-8 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider">
-                  <span>VERIFIABLE VIA CODE REPO</span>
+                  <span>{t.skills.verifiable}</span>
                   <span className="tabular-nums font-semibold">0{catIdx + 1}</span>
                 </div>
               </motion.div>

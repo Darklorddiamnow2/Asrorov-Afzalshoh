@@ -4,56 +4,57 @@
   --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --color-ivory: #F8F7F3;
-  --color-ivory-light: #FDFAF6;
-  --color-ivory-dark: #F0EDE5;
-  --color-navy: #14243A;
-  --color-navy-muted: #2A3C54;
-  --color-gold: #B69A62;
-  --color-gold-hover: #9E834D;
-  --color-gold-light: #F4EEDB;
-  --color-border-subtle: #E2DFD6;
+  --color-ivory: #FAF8F5;
+  --color-ivory-light: #FDFBF8;
+  --color-ivory-dark: #F2EFE8;
+  --color-navy: #121E31;
+  --color-navy-muted: #24354E;
+  --color-gold: #C5A566;
+  --color-gold-hover: #B5934E;
+  --color-gold-light: #F6EEDC;
+  --color-border-subtle: #E6E1D6;
 }
 
 :root {
-  --bg-primary: #F8F7F3;
-  --bg-surface: #FAF8F5;
-  --bg-surface-elevated: #F2EFE8;
-  --bg-surface-subtle: #F4F1EA;
-  --text-primary: #14243A;
-  --text-secondary: rgba(20, 36, 58, 0.78);
-  --text-muted: rgba(20, 36, 58, 0.55);
-  --border-subtle: #E2DFD6;
-  --border-strong: #CDC9BD;
-  --accent-gold: #B69A62;
-  --accent-gold-hover: #9E834D;
-  --accent-gold-subtle: rgba(182, 154, 98, 0.15);
-  --accent-navy: #14243A;
-  --accent-navy-hover: #1f3654;
+  --bg-primary: #FAF8F5;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #F4EFEB;
+  --bg-surface-subtle: #F6F3ED;
+  --text-primary: #121E31;
+  --text-secondary: rgba(18, 30, 49, 0.78);
+  --text-muted: rgba(18, 30, 49, 0.52);
+  --border-subtle: #E6E1D6;
+  --border-strong: #D5CEBF;
+  --accent-gold: #C5A566;
+  --accent-gold-hover: #B5934E;
+  --accent-gold-subtle: rgba(197, 165, 102, 0.16);
+  --accent-navy: #121E31;
+  --accent-navy-hover: #1B2B44;
   --color-scheme: light;
 }
 
 .dark {
-  --bg-primary: #0A121F;
+  --bg-primary: #0A111E;
   --bg-surface: #101B2E;
-  --bg-surface-elevated: #16243D;
-  --bg-surface-subtle: #0D1627;
-  --text-primary: #F5F2EB;
-  --text-secondary: rgba(245, 242, 235, 0.82);
-  --text-muted: rgba(245, 242, 235, 0.55);
-  --border-subtle: #1E3352;
-  --border-strong: #2A456C;
-  --accent-gold: #D4AF37;
-  --accent-gold-hover: #E2C25C;
-  --accent-gold-subtle: rgba(212, 175, 55, 0.18);
-  --accent-navy: #1B2D4A;
-  --accent-navy-hover: #263E63;
+  --bg-surface-elevated: #15233B;
+  --bg-surface-subtle: #0E1727;
+  --text-primary: #F4F1EA;
+  --text-secondary: rgba(244, 241, 234, 0.82);
+  --text-muted: rgba(244, 241, 234, 0.52);
+  --border-subtle: #1C2E4A;
+  --border-strong: #274066;
+  --accent-gold: #DFBD76;
+  --accent-gold-hover: #ECCB85;
+  --accent-gold-subtle: rgba(223, 189, 118, 0.18);
+  --accent-navy: #182842;
+  --accent-navy-hover: #223759;
   --color-scheme: dark;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
     color-scheme: light dark;
   }
 
@@ -61,7 +62,7 @@
     background-color: var(--bg-primary);
     color: var(--text-primary);
     font-family: var(--font-sans);
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   h1, h2, h3, .font-serif {
@@ -72,6 +73,51 @@
     cursor: pointer;
     touch-action: manipulation;
   }
+
+  /* Refined minimal scrollbar */
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-gold);
+  }
+}
+
+/* Ethereal Subtle Animations */
+@keyframes ethereal-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes ethereal-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.ethereal-pulsing {
+  animation: ethereal-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.ethereal-floating {
+  animation: ethereal-float 4s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

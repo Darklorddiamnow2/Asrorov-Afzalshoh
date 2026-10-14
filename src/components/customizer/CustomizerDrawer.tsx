@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Save, RotateCcw, Download, Check, User, Briefcase, Award, Sparkles, BookOpen } from 'lucide-react';
+import { X, Save, RotateCcw, Download, Check, User, Briefcase, Award, Send, Instagram } from 'lucide-react';
 import { PortfolioData } from '../../types/portfolio';
 
 interface CustomizerDrawerProps {
@@ -18,7 +18,7 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
   onResetData,
 }) => {
   const [formData, setFormData] = useState<PortfolioData>(data);
-  const [activeTab, setActiveTab] = useState<'profile' | 'projects' | 'achievements'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'testScores' | 'projects' | 'achievements'>('profile');
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Sync state if external data changes
@@ -73,7 +73,7 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
               Personalize Portfolio Data
             </h2>
             <p className="text-xs font-mono text-[var(--text-muted)] mt-0.5">
-              Edit placeholders to reflect your real academic profile
+              Edit candidate identity, test scores, contact details & projects
             </p>
           </div>
 
@@ -88,43 +88,56 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
         </div>
 
         {/* Tab Controls */}
-        <div className="flex border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] px-6 gap-2">
+        <div className="flex border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] px-6 gap-2 overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab('profile')}
-            className={`py-3 text-xs font-mono uppercase tracking-wider border-b-2 transition-colors flex items-center gap-1.5 ${
+            className={`py-3 text-xs font-mono uppercase tracking-wider border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
               activeTab === 'profile'
-                ? 'border-[#B69A62] text-[#14243A] font-medium'
-                : 'border-transparent text-[#14243A]/60 hover:text-[#14243A]'
+                ? 'border-[var(--accent-gold)] text-[var(--accent-gold)] font-medium'
+                : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
             }`}
           >
-            <User className="w-3.5 h-3.5 text-[#B69A62]" />
+            <User className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
             <span>Identity & Bio</span>
           </button>
 
           <button
             type="button"
-            onClick={() => setActiveTab('projects')}
-            className={`py-3 text-xs font-mono uppercase tracking-wider border-b-2 transition-colors flex items-center gap-1.5 ${
-              activeTab === 'projects'
-                ? 'border-[#B69A62] text-[#14243A] font-medium'
-                : 'border-transparent text-[#14243A]/60 hover:text-[#14243A]'
+            onClick={() => setActiveTab('testScores')}
+            className={`py-3 text-xs font-mono uppercase tracking-wider border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+              activeTab === 'testScores'
+                ? 'border-[var(--accent-gold)] text-[var(--accent-gold)] font-medium'
+                : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
             }`}
           >
-            <Briefcase className="w-3.5 h-3.5 text-[#B69A62]" />
+            <Award className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
+            <span>IELTS & SAT</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('projects')}
+            className={`py-3 text-xs font-mono uppercase tracking-wider border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+              activeTab === 'projects'
+                ? 'border-[var(--accent-gold)] text-[var(--accent-gold)] font-medium'
+                : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            <Briefcase className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
             <span>Projects ({formData.projects.length})</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('achievements')}
-            className={`py-3 text-xs font-mono uppercase tracking-wider border-b-2 transition-colors flex items-center gap-1.5 ${
+            className={`py-3 text-xs font-mono uppercase tracking-wider border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
               activeTab === 'achievements'
-                ? 'border-[#B69A62] text-[#14243A] font-medium'
-                : 'border-transparent text-[#14243A]/60 hover:text-[#14243A]'
+                ? 'border-[var(--accent-gold)] text-[var(--accent-gold)] font-medium'
+                : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
             }`}
           >
-            <Award className="w-3.5 h-3.5 text-[#B69A62]" />
+            <Award className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
             <span>Honors</span>
           </button>
         </div>
@@ -135,19 +148,19 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#14243A]/70 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">
                     Student Full Name
                   </label>
                   <input
                     type="text"
                     value={formData.profile.name}
                     onChange={(e) => handleProfileChange('name', e.target.value)}
-                    className="w-full px-3 py-2 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
+                    className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#14243A]/70 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">
                     Monogram (Initials)
                   </label>
                   <input
@@ -155,118 +168,118 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                     maxLength={4}
                     value={formData.profile.monogram}
                     onChange={(e) => handleProfileChange('monogram', e.target.value)}
-                    className="w-full px-3 py-2 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
+                    className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#14243A]/70 mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">
                   Applicant Subtitle / Status
                 </label>
                 <input
                   type="text"
                   value={formData.profile.applicantStatus}
                   onChange={(e) => handleProfileChange('applicantStatus', e.target.value)}
-                  className="w-full px-3 py-2 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
+                  className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#14243A]/70 mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">
                   Hero Headline
                 </label>
                 <input
                   type="text"
                   value={formData.profile.headline}
                   onChange={(e) => handleProfileChange('headline', e.target.value)}
-                  className="w-full px-3 py-2 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
+                  className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#14243A]/70 mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">
                   Lead Biography / Intellectual Focus
                 </label>
                 <textarea
                   rows={3}
                   value={formData.profile.leadBio}
                   onChange={(e) => handleProfileChange('leadBio', e.target.value)}
-                  className="w-full px-3 py-2 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
+                  className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#14243A]/70 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">
                     Contact Email
                   </label>
                   <input
                     type="email"
                     value={formData.profile.email}
                     onChange={(e) => handleProfileChange('email', e.target.value)}
-                    className="w-full px-3 py-2 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
+                    className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#14243A]/70 mb-1">
-                    Location / Region
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">
+                    Contact Phone / Mobile
                   </label>
                   <input
                     type="text"
-                    value={formData.profile.location}
-                    onChange={(e) => handleProfileChange('location', e.target.value)}
-                    className="w-full px-3 py-2 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
+                    value={formData.profile.phone || '+998(90)4771307'}
+                    onChange={(e) => handleProfileChange('phone', e.target.value)}
+                    className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
                   />
                 </div>
               </div>
 
-              {/* Portrait Switcher */}
-              <div className="p-4 bg-[#FAF8F5] border border-[#E2DFD6] space-y-3">
-                <span className="block text-xs font-mono uppercase tracking-wider text-[#B69A62] font-semibold">
-                  Hero Portrait Mode
-                </span>
-                <div className="flex items-center gap-4 text-xs font-sans">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="portraitType"
-                      checked={formData.profile.portraitType === 'typographic'}
-                      onChange={() => handleProfileChange('portraitType', 'typographic')}
-                    />
-                    <span>Archival Typographic Insignia (Monogram)</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1 flex items-center gap-1.5">
+                    <Send className="w-3 h-3 text-[var(--accent-gold)]" />
+                    <span>Telegram URL / Handle</span>
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="portraitType"
-                      checked={formData.profile.portraitType === 'image'}
-                      onChange={() => handleProfileChange('portraitType', 'image')}
-                    />
-                    <span>Custom Photograph</span>
-                  </label>
+                  <input
+                    type="text"
+                    placeholder="https://t.me/afzal_asrorov"
+                    value={formData.profile.telegramUrl || 'https://t.me/afzal_asrorov'}
+                    onChange={(e) => handleProfileChange('telegramUrl', e.target.value)}
+                    className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
+                  />
                 </div>
 
-                {formData.profile.portraitType === 'image' && (
-                  <div>
-                    <label className="block text-[11px] font-mono text-[#14243A]/60 mb-1">
-                      Direct Image URL
-                    </label>
-                    <input
-                      type="url"
-                      placeholder="https://example.com/my-portrait.jpg"
-                      value={formData.profile.portraitImageUrl || ''}
-                      onChange={(e) => handleProfileChange('portraitImageUrl', e.target.value)}
-                      className="w-full px-3 py-2 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
-                    />
-                  </div>
-                )}
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1 flex items-center gap-1.5">
+                    <Instagram className="w-3 h-3 text-[var(--accent-gold)]" />
+                    <span>Instagram Profile</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="https://instagram.com/afzalshoh.asrorov"
+                    value={formData.profile.instagramUrl || 'https://instagram.com/afzalshoh.asrorov'}
+                    onChange={(e) => handleProfileChange('instagramUrl', e.target.value)}
+                    className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
+                  />
+                </div>
               </div>
 
-              {/* Social URLs */}
-              <div className="space-y-3">
-                <span className="block text-xs font-mono uppercase tracking-wider text-[#14243A]/70">
+              <div>
+                <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1">
+                  Location / Region
+                </label>
+                <input
+                  type="text"
+                  value={formData.profile.location}
+                  onChange={(e) => handleProfileChange('location', e.target.value)}
+                  className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
+                />
+              </div>
+
+              {/* Scholarly URLs */}
+              <div className="space-y-3 pt-2">
+                <span className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
                   Scholarly & Professional URLs
                 </span>
                 <div>
@@ -275,7 +288,7 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                     placeholder="GitHub URL"
                     value={formData.profile.githubUrl || ''}
                     onChange={(e) => handleProfileChange('githubUrl', e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
+                    className="w-full px-3 py-1.5 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
                   />
                 </div>
                 <div>
@@ -284,7 +297,7 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                     placeholder="LinkedIn URL"
                     value={formData.profile.linkedinUrl || ''}
                     onChange={(e) => handleProfileChange('linkedinUrl', e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
+                    className="w-full px-3 py-1.5 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
                   />
                 </div>
                 <div>
@@ -293,8 +306,61 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                     placeholder="Google Scholar / Citations URL"
                     value={formData.profile.scholarUrl || ''}
                     onChange={(e) => handleProfileChange('scholarUrl', e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:border-[#B69A62] focus:outline-none"
+                    className="w-full px-3 py-1.5 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
                   />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'testScores' && (
+            <div className="space-y-5">
+              <div className="p-4 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded space-y-1">
+                <h3 className="font-serif text-sm font-semibold text-[var(--text-primary)]">
+                  Standardized Testing Credentials
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] font-sans leading-relaxed">
+                  Certified scores are displayed in the Hero banner, Achievements section, and downloadable CV.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="p-4 border border-[var(--border-subtle)] bg-[var(--bg-surface)] space-y-3 rounded">
+                  <div className="flex items-center justify-between text-xs font-mono text-[var(--accent-gold)]">
+                    <span className="font-semibold uppercase">IELTS Academic Examination</span>
+                    <span className="px-2 py-0.5 bg-[var(--accent-gold)]/10 rounded">Band 8.0</span>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase text-[var(--text-muted)] mb-1">
+                      IELTS Overall & Section Breakdown
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.profile.ieltsScore || '8.0 (L: 8.5, R: 8.5, W: 7.5, S: 7.5)'}
+                      onChange={(e) => handleProfileChange('ieltsScore', e.target.value)}
+                      className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 border border-[var(--border-subtle)] bg-[var(--bg-surface)] space-y-3 rounded">
+                  <div className="flex items-center justify-between text-xs font-mono text-[var(--accent-gold)]">
+                    <span className="font-semibold uppercase">SAT (Scholastic Assessment Test)</span>
+                    <span className="px-2 py-0.5 bg-[var(--accent-gold)]/10 rounded">1540 / 1600</span>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase text-[var(--text-muted)] mb-1">
+                      SAT Total & Section Scores
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.profile.satScore || '1540 (Math: 800, EBRW: 740)'}
+                      onChange={(e) => handleProfileChange('satScore', e.target.value)}
+                      className="w-full px-3 py-2 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-[var(--accent-gold)] focus:outline-none rounded"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -302,18 +368,18 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
 
           {activeTab === 'projects' && (
             <div className="space-y-6">
-              <p className="text-xs text-[#14243A]/70 font-sans">
-                Edit existing sample projects or customize their titles, questions, and outcomes.
+              <p className="text-xs text-[var(--text-secondary)] font-sans">
+                Edit existing computational projects or customize their titles, questions, and outcomes.
               </p>
               {formData.projects.map((proj, idx) => (
-                <div key={proj.id} className="p-4 border border-[#E2DFD6] bg-[#FAF8F5] space-y-3">
-                  <div className="flex items-center justify-between text-xs font-mono text-[#B69A62]">
+                <div key={proj.id} className="p-4 border border-[var(--border-subtle)] bg-[var(--bg-surface)] space-y-3 rounded">
+                  <div className="flex items-center justify-between text-xs font-mono text-[var(--accent-gold)]">
                     <span>Project #{idx + 1}</span>
                     <span className="uppercase">{proj.category}</span>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-mono uppercase text-[#14243A]/60 mb-1">
+                    <label className="block text-[11px] font-mono uppercase text-[var(--text-muted)] mb-1">
                       Title
                     </label>
                     <input
@@ -324,12 +390,12 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                         updated[idx].title = e.target.value;
                         setFormData({ ...formData, projects: updated });
                       }}
-                      className="w-full px-3 py-1.5 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:outline-none"
+                      className="w-full px-3 py-1.5 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none rounded"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-mono uppercase text-[#14243A]/60 mb-1">
+                    <label className="block text-[11px] font-mono uppercase text-[var(--text-muted)] mb-1">
                       Problem Statement
                     </label>
                     <textarea
@@ -340,12 +406,12 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                         updated[idx].problemStatement = e.target.value;
                         setFormData({ ...formData, projects: updated });
                       }}
-                      className="w-full px-3 py-1.5 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:outline-none"
+                      className="w-full px-3 py-1.5 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none rounded"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-mono uppercase text-[#14243A]/60 mb-1">
+                    <label className="block text-[11px] font-mono uppercase text-[var(--text-muted)] mb-1">
                       Student Contribution
                     </label>
                     <textarea
@@ -356,7 +422,7 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                         updated[idx].studentContribution = e.target.value;
                         setFormData({ ...formData, projects: updated });
                       }}
-                      className="w-full px-3 py-1.5 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:outline-none"
+                      className="w-full px-3 py-1.5 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none rounded"
                     />
                   </div>
                 </div>
@@ -366,14 +432,14 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
 
           {activeTab === 'achievements' && (
             <div className="space-y-6">
-              <p className="text-xs text-[#14243A]/70 font-sans">
+              <p className="text-xs text-[var(--text-secondary)] font-sans">
                 Manage your verified honors, Olympiads, and academic program distinctions.
               </p>
               {formData.achievements.map((ach, idx) => (
-                <div key={ach.id} className="p-4 border border-[#E2DFD6] bg-[#FAF8F5] space-y-3">
-                  <div className="flex items-center justify-between text-xs font-mono text-[#B69A62]">
+                <div key={ach.id} className="p-4 border border-[var(--border-subtle)] bg-[var(--bg-surface)] space-y-3 rounded">
+                  <div className="flex items-center justify-between text-xs font-mono text-[var(--accent-gold)]">
                     <span>Honor #{idx + 1}</span>
-                    <label className="flex items-center gap-1.5 text-xs text-[#14243A] cursor-pointer">
+                    <label className="flex items-center gap-1.5 text-xs text-[var(--text-primary)] cursor-pointer">
                       <input
                         type="checkbox"
                         checked={ach.isVerified}
@@ -388,7 +454,7 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-mono uppercase text-[#14243A]/60 mb-1">
+                    <label className="block text-[11px] font-mono uppercase text-[var(--text-muted)] mb-1">
                       Honor Title
                     </label>
                     <input
@@ -399,13 +465,13 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                         updated[idx].title = e.target.value;
                         setFormData({ ...formData, achievements: updated });
                       }}
-                      className="w-full px-3 py-1.5 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:outline-none"
+                      className="w-full px-3 py-1.5 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none rounded"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-mono uppercase text-[#14243A]/60 mb-1">
+                      <label className="block text-[11px] font-mono uppercase text-[var(--text-muted)] mb-1">
                         Awarding Body
                       </label>
                       <input
@@ -416,11 +482,11 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                           updated[idx].awardingBody = e.target.value;
                           setFormData({ ...formData, achievements: updated });
                         }}
-                        className="w-full px-3 py-1.5 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:outline-none"
+                        className="w-full px-3 py-1.5 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none rounded"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-mono uppercase text-[#14243A]/60 mb-1">
+                      <label className="block text-[11px] font-mono uppercase text-[var(--text-muted)] mb-1">
                         Year
                       </label>
                       <input
@@ -431,7 +497,7 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
                           updated[idx].year = e.target.value;
                           setFormData({ ...formData, achievements: updated });
                         }}
-                        className="w-full px-3 py-1.5 text-xs font-sans bg-[#F4F1EA] border border-[#E2DFD6] focus:outline-none"
+                        className="w-full px-3 py-1.5 text-xs font-sans bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none rounded"
                       />
                     </div>
                   </div>
@@ -458,10 +524,10 @@ export const CustomizerDrawer: React.FC<CustomizerDrawerProps> = ({
               type="button"
               onClick={onResetData}
               title="Reset all placeholders to default curated state"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-mono text-red-500 hover:bg-red-500/10 rounded transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-mono text-rose-500 hover:bg-rose-500/10 rounded transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Reset Defaults</span>
+              <span className="hidden sm:inline">Reset</span>
             </button>
           </div>
 
