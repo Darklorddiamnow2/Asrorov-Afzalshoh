@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-ivory: #F8F7F3;
+  --color-ivory-light: #FDFAF6;
+  --color-ivory-dark: #F0EDE5;
+  --color-navy: #14243A;
+  --color-navy-muted: #2A3C54;
+  --color-gold: #B69A62;
+  --color-gold-hover: #9E834D;
+  --color-gold-light: #F4EEDB;
+  --color-border-subtle: #E2DFD6;
+}
+
+:root {
+  --bg-primary: #F8F7F3;
+  --bg-surface: #FAF8F5;
+  --bg-surface-elevated: #F2EFE8;
+  --bg-surface-subtle: #F4F1EA;
+  --text-primary: #14243A;
+  --text-secondary: rgba(20, 36, 58, 0.78);
+  --text-muted: rgba(20, 36, 58, 0.55);
+  --border-subtle: #E2DFD6;
+  --border-strong: #CDC9BD;
+  --accent-gold: #B69A62;
+  --accent-gold-hover: #9E834D;
+  --accent-gold-subtle: rgba(182, 154, 98, 0.15);
+  --accent-navy: #14243A;
+  --accent-navy-hover: #1f3654;
+  --color-scheme: light;
+}
+
+.dark {
+  --bg-primary: #0A121F;
+  --bg-surface: #101B2E;
+  --bg-surface-elevated: #16243D;
+  --bg-surface-subtle: #0D1627;
+  --text-primary: #F5F2EB;
+  --text-secondary: rgba(245, 242, 235, 0.82);
+  --text-muted: rgba(245, 242, 235, 0.55);
+  --border-subtle: #1E3352;
+  --border-strong: #2A456C;
+  --accent-gold: #D4AF37;
+  --accent-gold-hover: #E2C25C;
+  --accent-gold-subtle: rgba(212, 175, 55, 0.18);
+  --accent-navy: #1B2D4A;
+  --accent-navy-hover: #263E63;
+  --color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color-scheme: light dark;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  button, [role="button"], a {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
